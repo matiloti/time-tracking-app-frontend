@@ -1,0 +1,204 @@
+import { DropdownOption } from "@/src/components/Dropdown/Dropdown";
+import { DropdownStyles } from "@/src/components/Dropdown/types";
+import { Form, FormFieldObject } from "@/src/components/Form/Form";
+import FormDropdown from "@/src/components/Form/FormDropdown/FormDropdown";
+import { FormDropdownStyles } from "@/src/components/Form/FormDropdown/types";
+import FormTextField from "@/src/components/Form/FormTextField/FormTextField";
+import { FormTextFieldStyles, PlaceholderColors } from "@/src/components/Form/FormTextField/types";
+import GLOBAL_STYLES from "@/src/constants/styles";
+import { isValidDropdown, isValidString, isValidStringWithLength } from "@/src/utils/formUtils";
+import { useMemo, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
+
+interface Category {
+    id: Int32,
+    value: string
+}
+
+const CATEGORIES = [
+    {
+        id: 1,
+        value: 'Software'
+    },
+    {
+        id: 2,
+        value: 'Content Creation'
+    },
+    {
+        id: 3,
+        value: 'Design'
+    },
+    {
+        id: 4,
+        value: 'Marketing'
+    },
+    {
+        id: 5,
+        value: 'Writing'
+    },
+    {
+        id: 6,
+        value: 'Research'
+    },
+    {
+        id: 7,
+        value: 'Education'
+    },
+    {
+        id: 8,
+        value: 'Consulting'
+    },
+    {
+        id: 9,
+        value: 'Finance'
+    },
+    {
+        id: 10,
+        value: 'Legal'
+    },
+    {
+        id: 11,
+        value: 'Other'
+    }
+]
+
+function mapCategoryToDropdownOption(category: Category): DropdownOption<Int32> {
+    return {
+        text: category.value, 
+        value: category.id
+    };
+}
+
+export default function CreateProject() {
+
+    const [categories, setCategories] = useState(CATEGORIES);
+    
+    const DROPDOWN_OPTIONS = useMemo(
+        () => categories.map(mapCategoryToDropdownOption), 
+        [categories]
+    );
+
+    function sendForm(formFields: FormFieldObject) {
+        console.log(formFields);
+    }
+
+    return (
+        <View style={style.container}>
+            <Form sendForm={sendForm}>
+                <FormTextField 
+                    name='title'
+                    placeholder='Project title...' 
+                    validationRules={[{
+                        execute: (value) => isValidStringWithLength(value, 25),
+                        errorMessage: 'Title is required'
+                    }]}
+                    style={TITLE_FIELD_STYLE}
+                    placeholderColors={PLACEHOLDER_COLORS}
+                />
+                <FormTextField 
+                    name='description'
+                    placeholder='Insert a description...' 
+                    validationRules={[
+                        {
+                            execute: (value) => isValidString(value),
+                            errorMessage: 'Description is required'
+                        },
+                        {
+                            execute: (value) => isValidStringWithLength(value, 200),
+                            errorMessage: "Description can't exceed 200 characters"
+                        }
+                    ]}
+                    style={DESCRIPTION_FIELD_STYLE}
+                    placeholderColors={PLACEHOLDER_COLORS}
+                    multiline
+                />
+                <FormDropdown 
+                    name='category'
+                    label='Category'
+                    options={DROPDOWN_OPTIONS} 
+                    placeholder='Select a category...'
+                    validationRules={[{
+                        execute: isValidDropdown,
+                        errorMessage: 'Category is required'
+                    }]}
+                    style={DROPDOWN_FIELD_STYLE}
+                />
+            </Form>
+        </View>
+    );
+}
+
+const PLACEHOLDER_COLORS: PlaceholderColors = {
+    normal: 'gray',
+    error: 'rgb(255, 0, 0)'
+}
+
+const TITLE_FIELD_STYLE: FormTextFieldStyles = StyleSheet.create({
+    fieldGroup: {
+    },
+    fieldGroupError: {
+    },
+    textInput: {
+        fontSize: 30,
+        backgroundColor: 'rgb(242, 242, 242)',
+        color: 'black',
+        borderBottomColor: 'lightgray',
+        borderBottomWidth: 1,
+    },
+    textInputError: {
+        borderWidth: 0,
+        borderBottomWidth: 1,
+        borderBottomColor: 'red',
+    }
+});
+
+const DESCRIPTION_FIELD_STYLE: FormTextFieldStyles = StyleSheet.create({
+    fieldGroup: {
+        marginTop: 20
+    },
+    textInput: {
+        maxHeight: 200,
+        color: 'black',
+        textAlignVertical: 'top'
+    },
+    textInputError: {
+        borderWidth: 1
+    }
+});
+
+const DROPDOWN_FIELD_STYLE: FormDropdownStyles = {
+    fieldGroup: {
+        marginTop: 20
+    },
+    fieldGroupError: {
+
+    },
+    label: {
+        
+    },
+    labelError: {
+        
+    },
+    dropdown: {
+        dropdownBox: {
+        },
+    } as DropdownStyles,
+    dropdownError: {
+        dropdownBox: {
+            borderColor: 'red',
+        },
+        dropdownPlaceholder: {
+            color: 'red'
+        }
+    } as DropdownStyles,
+};
+
+const style = StyleSheet.create({
+    container: {
+        ...GLOBAL_STYLES.container,
+        flex: 1,
+        justifyContent: 'space-between',
+        marginBottom: '5%'
+    }
+});
