@@ -7,17 +7,17 @@ export default function Index() {
   const router: Router = useRouter();
 
   return (
-    <View
-      style={styles.container}
-    >
-      <Text style={styles.appHeader}>HourGlass</Text>
-      
-      <View style={styles.buttonRow}>
-        <Pressable style={styles.createProjectButton} onPress={() => router.navigate('/project/create')}>
-          <Text style={styles.createProjectButtonText}>+ Create new project</Text>
-        </Pressable>
+      <View
+        style={styles.container}
+      >
+        <Text style={styles.appHeader}>HourGlass</Text>
+        
+        <View style={styles.buttonRow}>
+          <Pressable style={styles.createProjectButton} onPress={() => router.navigate('/project/create')}>
+            <Text style={styles.createProjectButtonText}>+ Create new project</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
   );
 }
 

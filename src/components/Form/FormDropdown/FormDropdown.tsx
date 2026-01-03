@@ -6,7 +6,7 @@ import { DropdownStyles } from "../../Dropdown/types";
 import { DEFAULT_FORMFIELD_VALUE } from "../constants";
 import { FormContext, FormValidationContext } from "../Form";
 import { FormField } from "../types";
-import { defaultDropdownErrorStyles, defaultDropdownStyles, defaultStyle } from "./styles";
+import { defaultDropdownStyles, defaultStyle } from "./styles";
 import { FormDropdownProps } from "./types";
 
 export default function FormDropdown<T>({
@@ -24,24 +24,27 @@ export default function FormDropdown<T>({
     const [errorMsg, setErrorMsg] = useState<string>();
     
     useEffect(() => {
-        const validation = validationRules.find(rule => !rule.execute(DEFAULT_FORMFIELD_VALUE.value));
         updateForm({[name]: DEFAULT_FORMFIELD_VALUE});
-        setErrorMsg(validation?.errorMessage);
-    }, [name, updateForm, validationRules]);
-
-    useEffect(() => {
-        updateForm({[name]: {value: null, isValid: false}});
     }, [name, updateForm]);
 
-    function onSelect(selectedOption: DropdownOption<T>) {
-        const validation = validationRules.find(rule => !rule.execute(selectedOption.value));
-        const newValue = {value: selectedOption.value, isValid: !validation};
+    function updateFormDropdownField(newValue: FormField<T>) {
         setField(newValue);
         updateForm({[name]: newValue});
-        setErrorMsg(validation?.errorMessage);
     }
 
-    const CONTAINER_STYLES: StyleProp<ViewStyle> = useMemo(
+    function getFirstFailingValidationRule(selectedOption: DropdownOption<T>) {
+        return validationRules.find(rule => !rule.execute(selectedOption.value));
+    }
+
+    function onSelect(selectedOption: DropdownOption<T>) {
+        const firstFailingValidation = getFirstFailingValidationRule(selectedOption);
+        const selectedOptionIsValid = !firstFailingValidation;
+        const newValue = {value: selectedOption.value, isValid: selectedOptionIsValid};
+        updateFormDropdownField(newValue);
+        setErrorMsg(firstFailingValidation?.errorMessage);
+    }
+
+    const FIELDGROUP_STYLE: StyleProp<ViewStyle> = useMemo(
         () => getStyle(
             StyleSheet.compose(defaultStyle.fieldGroup, style?.fieldGroup), 
             StyleSheet.compose(defaultStyle.fieldGroupError, style?.fieldGroupError),
@@ -65,44 +68,44 @@ export default function FormDropdown<T>({
         () => (
             {
                 container: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.container, style?.dropdown?.container),
-                    StyleSheet.compose(defaultDropdownErrorStyles.container, style?.dropdownError?.container),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.container, style?.dropdown?.container),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.container, style?.dropdownError?.container),
                     field.isValid,
                     showErrors
                 ),
                 dropdownBox: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownBox, style?.dropdown?.dropdownBox),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownBox, style?.dropdownError?.dropdownBox),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownBox, style?.dropdown?.dropdownBox),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownBox, style?.dropdownError?.dropdownBox),
                     field.isValid,
                     showErrors
                 ),
                 dropdownModal: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownModal, style?.dropdown?.dropdownModal),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownModal, style?.dropdownError?.dropdownModal),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownModal, style?.dropdown?.dropdownModal),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownModal, style?.dropdownError?.dropdownModal),
                     field.isValid,
                     showErrors
                 ),
                 dropdownOption: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownOption, style?.dropdown?.dropdownOption),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownOption, style?.dropdownError?.dropdownOption),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownOption, style?.dropdown?.dropdownOption),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownOption, style?.dropdownError?.dropdownOption),
                     field.isValid,
                     showErrors
                 ),
                 dropdownOptionText: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownOptionText, style?.dropdown?.dropdownOptionText),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownOptionText, style?.dropdownError?.dropdownOptionText),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownOptionText, style?.dropdown?.dropdownOptionText),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownOptionText, style?.dropdownError?.dropdownOptionText),
                     field.isValid,
                     showErrors
                 ),
                 dropdownPlaceholder: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownPlaceholder, style?.dropdown?.dropdownPlaceholder),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownPlaceholder, style?.dropdownError?.dropdownPlaceholder),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownPlaceholder, style?.dropdown?.dropdownPlaceholder),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownPlaceholder, style?.dropdownError?.dropdownPlaceholder),
                     field.isValid,
                     showErrors
                 ),
                 dropdownSelectedText: getStyle(
-                    StyleSheet.compose(defaultDropdownStyles.dropdownSelectedText, style?.dropdown?.dropdownSelectedText),
-                    StyleSheet.compose(defaultDropdownErrorStyles.dropdownSelectedText, style?.dropdownError?.dropdownSelectedText),
+                    StyleSheet.compose(defaultDropdownStyles.dropdown?.dropdownSelectedText, style?.dropdown?.dropdownSelectedText),
+                    StyleSheet.compose(defaultDropdownStyles.dropdownError?.dropdownSelectedText, style?.dropdownError?.dropdownSelectedText),
                     field.isValid,
                     showErrors
                 ),
@@ -117,7 +120,7 @@ export default function FormDropdown<T>({
     );
 
     return (
-        <View style={CONTAINER_STYLES}>
+        <View style={FIELDGROUP_STYLE}>
             {label && <Text style={LABEL_STYLE}>{label}</Text>}
             <Dropdown 
                 options={options}

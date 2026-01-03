@@ -20,17 +20,27 @@ const defaultStyle = StyleSheet.create({
     }
 });
 
-const defaultDropdownStyles: DropdownStyles = StyleSheet.create({
-    dropdownBox: {
-        marginBottom: 10
-    }
-});
+const defaultDropdownStyles = {
+    dropdown: {
 
-const defaultDropdownErrorStyles: DropdownStyles = StyleSheet.create({
-    dropdownBox: {
-        borderColor: 'red',
-    }
-});
+    } as DropdownStyles,
+        dropdownError: {
+            dropdownBox: {
+                borderColor: 'red',
+            },
+            dropdownOption: {
+                borderColor: 'red',
+            },
+            dropdownModal: {
+                borderColor: 'red',
+            },
+            dropdownOptionText: {
+                color: 'red'
+            },
+            dropdownSelectedText: {
+                color: 'red'
+            }
+    } as DropdownStyles
+};
 
-export { defaultDropdownErrorStyles, defaultDropdownStyles, defaultStyle };
-
+export { defaultDropdownStyles, defaultStyle };

@@ -1,3 +1,4 @@
+import { DismissFieldFocusContext } from "@/src/context/DismissFieldFocusContext";
 import { getStyle } from "@/src/utils/formUtils";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextInput, TextStyle, View, ViewStyle } from "react-native";
@@ -22,21 +23,30 @@ export default function FormTextField({
     const [field, setField] = useState<FormField<string>>(DEFAULT_FORMFIELD_VALUE);
     const [errorMsg, setErrorMsg] = useState<string>();
 
-    useEffect(() => {
-        const validation = validationRules.find(rule => !rule.execute(DEFAULT_FORMFIELD_VALUE.value));
-        updateForm({[name]: DEFAULT_FORMFIELD_VALUE});
-        setErrorMsg(validation?.errorMessage);
-    }, [name, updateForm, validationRules]);
+    const dismissContext = useContext(DismissFieldFocusContext);
 
-    function onChangeText(text: string) {
-        const validation = validationRules.find(rule => !rule.execute(text));
-        const newValue = {value: text, isValid: !validation};
+    useEffect(() => {
+        updateForm({[name]: DEFAULT_FORMFIELD_VALUE});
+    }, [name, updateForm]);
+
+    function updateFormTextField(newValue: FormField<string>) {
         setField(newValue);
         updateForm({[name]: newValue});
-        setErrorMsg(validation?.errorMessage);
     }
 
-    const CONTAINER_STYLES: StyleProp<ViewStyle> = useMemo(
+    function getFirstFailingValidationRule(text: string) {
+        return validationRules.find(rule => !rule.execute(text));
+    }
+
+    function onChangeText(text: string) {
+        const firstFailingValidation = getFirstFailingValidationRule(text);
+        const textIsValid = !firstFailingValidation;
+        const newValue = {value: text, isValid: textIsValid};
+        updateFormTextField(newValue);
+        setErrorMsg(firstFailingValidation?.errorMessage);
+    }
+
+    const FIELDGROUP_STYLES: StyleProp<ViewStyle> = useMemo(
         () => getStyle(
             StyleSheet.compose(defaultStyle.fieldGroup, style?.fieldGroup),
             StyleSheet.compose(defaultStyle.fieldGroupError, style?.fieldGroupError), 
@@ -54,7 +64,7 @@ export default function FormTextField({
         [style, showErrors, field.isValid]
     );
 
-    const TEXT_STYLES: StyleProp<TextStyle> = useMemo(
+    const TEXTINPUT_STYLES: StyleProp<TextStyle> = useMemo(
         () => getStyle(
             StyleSheet.compose(defaultStyle.textInput, style?.textInput), 
             StyleSheet.compose(defaultStyle.textInputError, style?.textInputError), 
@@ -69,15 +79,16 @@ export default function FormTextField({
     );
 
     return (
-        <View style={CONTAINER_STYLES}>
+        <View style={FIELDGROUP_STYLES}>
             {label && <Text style={LABEL_STYLES}>{label}</Text>}
-            <TextInput 
-                style={TEXT_STYLES} 
-                placeholder={placeholder} 
-                placeholderTextColor={!field.isValid && showErrors ? placeholderColors?.error : placeholderColors?.normal}
-                onChangeText={onChangeText}
-                multiline={multiline}
-            />
+                <TextInput 
+                    onFocus={() => dismissContext?.dismissOnlyNotStandardFields()}
+                    style={TEXTINPUT_STYLES} 
+                    placeholder={placeholder} 
+                    placeholderTextColor={!field.isValid && showErrors ? placeholderColors?.error : placeholderColors?.normal}
+                    onChangeText={onChangeText}
+                    multiline={multiline}
+                />
             <Text style={ERRORMSG_STYLE}>{(!field.isValid && showErrors && errorMsg) ? `* ${errorMsg}` : ''}</Text>
         </View>
     );

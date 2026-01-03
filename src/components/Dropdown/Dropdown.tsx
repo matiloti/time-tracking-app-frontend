@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { DismissFieldFocusContext } from "@/src/context/DismissFieldFocusContext";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View, ViewStyle } from "react-native";
 import { defaultStyle } from "./styles";
 import { DropdownOption, DropdownProps } from "./types";
@@ -31,6 +32,8 @@ function Dropdown<T>({
 
     const {width} = useWindowDimensions();
 
+    const dismissContext = useContext(DismissFieldFocusContext);
+
     useEffect(() => {
         if(size === 'auto') {
             setDropdownWidth(width - width * 0.2);
@@ -39,7 +42,22 @@ function Dropdown<T>({
         }
     }, [size, width]);
 
-    function onDropdownPress(option: DropdownOption<T>) {
+    useEffect(() => {
+        if (!dismissContext) return;
+
+        const unregister = dismissContext.register(() => {
+            setVisible(false);
+        });
+
+        return unregister;
+    }, [dismissContext]);
+
+    function onDropdownPress() {
+        setVisible(!visible);
+        dismissContext?.dismissOnlyStandardFields();
+    }
+
+    function onDropdownOptionPress(option: DropdownOption<T>) {
         setSelectedOption(option);
         setVisible(false);
         onSelect(option);
@@ -77,7 +95,7 @@ function Dropdown<T>({
 
     return (
         <View style={CONTAINER_STYLE}>
-            <TouchableOpacity onPress={() => setVisible(!visible)} style={DROPDOWN_BOX_STYLE}>
+            <TouchableOpacity onPress={onDropdownPress} style={DROPDOWN_BOX_STYLE}>
                 <Text style={SELECTED_TEXT_STYLE}>{selectedOption.text}</Text>
             </TouchableOpacity>
 
@@ -87,7 +105,7 @@ function Dropdown<T>({
                     keyExtractor={(item) => `${id}-${item.value}`}
                     renderItem={({ item }) => (
                         <TouchableOpacity 
-                            onPress={() => onDropdownPress(item)}
+                            onPress={() => onDropdownOptionPress(item)}
                             style={DROPDOWN_OPTION_STYLE}
                         >
                             <Text style={DROPDOWN_OPTION_TEXT_STYLE}>{item.text}</Text>

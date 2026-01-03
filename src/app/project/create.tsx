@@ -10,6 +10,7 @@ import { isValidDropdown, isValidString, isValidStringWithLength } from "@/src/u
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
+import DismissKeyboardView from "@/src/components/wrappers/DismissKeyboardView";
 
 interface Category {
     id: Int32,
@@ -84,48 +85,50 @@ export default function CreateProject() {
     }
 
     return (
-        <View style={style.container}>
-            <Form sendForm={sendForm}>
-                <FormTextField 
-                    name='title'
-                    placeholder='Project title...' 
-                    validationRules={[{
-                        execute: (value) => isValidStringWithLength(value, 25),
-                        errorMessage: 'Title is required'
-                    }]}
-                    style={TITLE_FIELD_STYLE}
-                    placeholderColors={PLACEHOLDER_COLORS}
-                />
-                <FormTextField 
-                    name='description'
-                    placeholder='Insert a description...' 
-                    validationRules={[
-                        {
-                            execute: (value) => isValidString(value),
-                            errorMessage: 'Description is required'
-                        },
-                        {
-                            execute: (value) => isValidStringWithLength(value, 200),
-                            errorMessage: "Description can't exceed 200 characters"
-                        }
-                    ]}
-                    style={DESCRIPTION_FIELD_STYLE}
-                    placeholderColors={PLACEHOLDER_COLORS}
-                    multiline
-                />
-                <FormDropdown 
-                    name='category'
-                    label='Category'
-                    options={DROPDOWN_OPTIONS} 
-                    placeholder='Select a category...'
-                    validationRules={[{
-                        execute: isValidDropdown,
-                        errorMessage: 'Category is required'
-                    }]}
-                    style={DROPDOWN_FIELD_STYLE}
-                />
-            </Form>
-        </View>
+        <DismissKeyboardView>
+            <View style={style.container}>
+                <Form sendForm={sendForm}>
+                    <FormTextField 
+                        name='title'
+                        placeholder='Project title...' 
+                        validationRules={[{
+                            execute: (value) => isValidStringWithLength(value, 25),
+                            errorMessage: 'Title is required'
+                        }]}
+                        style={TITLE_FIELD_STYLE}
+                        placeholderColors={PLACEHOLDER_COLORS}
+                    />
+                    <FormTextField 
+                        name='description'
+                        placeholder='Insert a description...' 
+                        validationRules={[
+                            {
+                                execute: (value) => isValidString(value),
+                                errorMessage: 'Description is required'
+                            },
+                            {
+                                execute: (value) => isValidStringWithLength(value, 200),
+                                errorMessage: "Description can't exceed 200 characters"
+                            }
+                        ]}
+                        style={DESCRIPTION_FIELD_STYLE}
+                        placeholderColors={PLACEHOLDER_COLORS}
+                        multiline
+                    />
+                    <FormDropdown 
+                        name='category'
+                        label='Category'
+                        options={DROPDOWN_OPTIONS} 
+                        placeholder='Select a category...'
+                        validationRules={[{
+                            execute: isValidDropdown,
+                            errorMessage: 'Category is required'
+                        }]}
+                        style={DROPDOWN_FIELD_STYLE}
+                    />
+                </Form>
+            </View>
+        </DismissKeyboardView>
     );
 }
 
@@ -158,12 +161,13 @@ const DESCRIPTION_FIELD_STYLE: FormTextFieldStyles = StyleSheet.create({
         marginTop: 20
     },
     textInput: {
+        minHeight: 100,
         maxHeight: 200,
         color: 'black',
         textAlignVertical: 'top'
     },
     textInputError: {
-        borderWidth: 1
+        borderWidth: 0
     }
 });
 
