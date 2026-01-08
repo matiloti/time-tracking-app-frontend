@@ -1,6 +1,6 @@
 import { DismissFieldFocusContext } from "@/src/context/DismissFieldFocusContext";
 import { getStyle } from "@/src/utils/formUtils";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextInput, TextStyle, View, ViewStyle } from "react-native";
 import { DEFAULT_FORMFIELD_VALUE } from "../constants";
 import { FormContext, FormValidationContext } from "../Form";
@@ -25,17 +25,19 @@ export default function FormTextField({
 
     const dismissContext = useContext(DismissFieldFocusContext);
 
+    const getFirstFailingValidationRule = useCallback((text: string) => {
+        return validationRules.find(rule => !rule.execute(text));
+    }, [validationRules]);
+
     useEffect(() => {
+        const firstFailingValidation = getFirstFailingValidationRule(DEFAULT_FORMFIELD_VALUE.value);
         updateForm({[name]: DEFAULT_FORMFIELD_VALUE});
-    }, [name, updateForm]);
+        setErrorMsg(firstFailingValidation?.errorMessage);
+    }, [name, updateForm, validationRules, getFirstFailingValidationRule]);
 
     function updateFormTextField(newValue: FormField<string>) {
         setField(newValue);
         updateForm({[name]: newValue});
-    }
-
-    function getFirstFailingValidationRule(text: string) {
-        return validationRules.find(rule => !rule.execute(text));
     }
 
     function onChangeText(text: string) {

@@ -1,5 +1,5 @@
 import { getStyle } from "@/src/utils/formUtils";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 import { Dropdown, DropdownOption } from "../../Dropdown/Dropdown";
 import { DropdownStyles } from "../../Dropdown/types";
@@ -23,17 +23,19 @@ export default function FormDropdown<T>({
     const [field, setField] = useState<FormField<T>>(DEFAULT_FORMFIELD_VALUE);
     const [errorMsg, setErrorMsg] = useState<string>();
     
+    const getFirstFailingValidationRule = useCallback((selectedOption: DropdownOption<T>) => {
+        return validationRules.find(rule => !selectedOption || !rule.execute(selectedOption.value));
+    }, [validationRules]);
+    
     useEffect(() => {
+        const firstFailingValidation = getFirstFailingValidationRule(DEFAULT_FORMFIELD_VALUE.value);
         updateForm({[name]: DEFAULT_FORMFIELD_VALUE});
-    }, [name, updateForm]);
+        setErrorMsg(firstFailingValidation?.errorMessage);
+    }, [name, updateForm, validationRules, getFirstFailingValidationRule]);
 
     function updateFormDropdownField(newValue: FormField<T>) {
         setField(newValue);
         updateForm({[name]: newValue});
-    }
-
-    function getFirstFailingValidationRule(selectedOption: DropdownOption<T>) {
-        return validationRules.find(rule => !rule.execute(selectedOption.value));
     }
 
     function onSelect(selectedOption: DropdownOption<T>) {
