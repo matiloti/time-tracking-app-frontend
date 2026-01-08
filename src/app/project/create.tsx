@@ -11,6 +11,8 @@ import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 import DismissKeyboardView from "@/src/components/wrappers/DismissKeyboardView";
+import { createProject } from "@/src/services/project";
+import { Router, useRouter } from "expo-router";
 
 interface Category {
     id: Int32,
@@ -73,6 +75,7 @@ function mapCategoryToDropdownOption(category: Category): DropdownOption<Int32> 
 
 export default function CreateProject() {
 
+  const router: Router = useRouter();
     const [categories, setCategories] = useState(CATEGORIES);
     
     const DROPDOWN_OPTIONS = useMemo(
@@ -81,7 +84,14 @@ export default function CreateProject() {
     );
 
     function sendForm(formFields: FormFieldObject) {
-        console.log(formFields);
+        const project = {
+            name: formFields.name.value,
+            description: formFields.description?.value,
+            categoryId: Number(formFields.category.value)
+        };
+        console.log(project);
+        createProject(project);
+        router.back();
     }
 
     return (
@@ -89,13 +99,13 @@ export default function CreateProject() {
             <View style={style.container}>
                 <Form sendForm={sendForm}>
                     <FormTextField 
-                        name='title'
-                        placeholder='Project title...' 
+                        name='name'
+                        placeholder='Project name...' 
                         validationRules={[{
                             execute: (value) => isValidStringWithLength(value, 25),
-                            errorMessage: 'Title is required'
+                            errorMessage: 'name is required'
                         }]}
-                        style={TITLE_FIELD_STYLE}
+                        style={NAME_FIELD_STYLE}
                         placeholderColors={PLACEHOLDER_COLORS}
                     />
                     <FormTextField 
@@ -137,7 +147,7 @@ const PLACEHOLDER_COLORS: PlaceholderColors = {
     error: 'rgb(255, 0, 0)'
 }
 
-const TITLE_FIELD_STYLE: FormTextFieldStyles = StyleSheet.create({
+const NAME_FIELD_STYLE: FormTextFieldStyles = StyleSheet.create({
     fieldGroup: {
     },
     fieldGroupError: {
