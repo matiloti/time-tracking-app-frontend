@@ -1,3 +1,3 @@
-const BASE_URL = 'http://192.168.0.15:8080';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export { BASE_URL }
