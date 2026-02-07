@@ -1,4 +1,4 @@
-import { getStyle } from "@/src/utils/formUtils";
+import { getStyle } from "@/utils/formUtils";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 import { Dropdown, DropdownOption } from "../../Dropdown/Dropdown";

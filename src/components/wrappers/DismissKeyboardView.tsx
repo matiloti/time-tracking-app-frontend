@@ -1,4 +1,4 @@
-import { DismissFieldFocusContext } from '@/src/context/DismissFieldFocusContext';
+import { DismissFieldFocusContext } from '@/context/DismissFieldFocusContext';
 import React from 'react';
 import { Keyboard, TouchableWithoutFeedback, ViewProps } from 'react-native';
 

@@ -1,28 +1,20 @@
-// import Ionicons from '@expo/vector-icons/Ionicons';
-// import { Tabs } from "expo-router";
+import { NativeTabs } from 'expo-router/build/native-tabs';
+import { useColorScheme } from 'react-native';
+import { getTheme } from '@/constants/theme';
 
-// export default function TabsLayout() {
-//   return (
-//     <Tabs screenOptions={{}}>
-//         <Tabs.Screen name="index" options={{
-//             title: 'Home',
-//             tabBarIcon: ({ color, focused }) => (
-//                 <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
-//             )
-//           }}
-//         />
-//         <Tabs.Screen name='settings' options={{
-//             title: 'Settings',
-//             tabBarIcon: ({ color, focused }) => (
-//                 <Ionicons name={ focused ? 'settings-sharp' : 'settings-outline' } color={color} size={24} />
-//             )
-//         }}/>
-//         <Tabs.Screen name='about' options={{
-//             title: 'About',
-//             tabBarIcon: ({ color, focused }) => (
-//                 <Ionicons name={ focused ? 'settings-sharp' : 'settings-outline' } color={color} size={24} />
-//             )
-//         }}/>
-//     </Tabs>
-//   );
-// }
+export default function TabsLayout() {
+    const isDark = useColorScheme() === 'dark';
+    const theme = getTheme(isDark);
+  return (
+      <NativeTabs>
+          <NativeTabs.Trigger name="index" contentStyle={{ backgroundColor: theme.background }}>
+              <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+              <NativeTabs.Trigger.Icon sf="house.fill" />
+          </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="project" contentStyle={{ backgroundColor: theme.background }}>
+              <NativeTabs.Trigger.Label>Projects</NativeTabs.Trigger.Label>
+              <NativeTabs.Trigger.Icon sf="xmark.triangle.circle.square.fill" />
+          </NativeTabs.Trigger>
+      </NativeTabs>
+  );
+}

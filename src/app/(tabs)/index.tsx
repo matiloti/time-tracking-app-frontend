@@ -1,9 +1,11 @@
-import GLOBAL_STYLES from "@/src/constants/styles";
-import { findAllProjects } from "@/src/services/project";
-import { Project } from "@/src/services/types/Project";
+import ThemedText from "@/components/atoms/ThemedText";
+import GLOBAL_STYLES from "@/constants/styles";
+import { findAllProjects } from "@/services/project";
+import { Project } from "@/services/types/Project";
 import { Router, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
 
@@ -23,45 +25,9 @@ export default function Index() {
   }, []);
 
   return (
-      <View
-        style={styles.container}
-      >
-        <Text style={styles.appHeader}>HourGlass</Text>
-
-        <View>
-          <View style={styles.projectsHeaderContainer}>
-            <Text style={styles.projectsTitle}>Projects</Text>
-            <Pressable style={styles.createProjectButton} onPress={() => router.navigate('/project/create')}>
-              <Text style={styles.createProjectButtonText}>+</Text>
-            </Pressable>
-          </View>
-          <FlatList 
-              data={[{id: -1, name: "Name", description: "Description", categoryId: "Category", createdAt: "Date"},...projects]}
-              keyExtractor={(item) => `${item.id}`}
-              renderItem={({ item, index }) => (
-                index === 0 ? <View style={styles.projectHeader}>
-                    <Text style={styles.projectHeaderItem}>{item.name}</Text>
-                    <Text style={styles.projectHeaderItem}>{item.description}</Text>
-                    <Text style={styles.projectHeaderItem}>{item.categoryId}</Text>
-                    <Text style={styles.projectHeaderItem}>{item.createdAt}</Text>
-                </View> :
-                <TouchableOpacity
-                    onPress={() => console.log(item)}
-                    style={styles.projectsRow}
-                >
-                    <Text style={styles.projectItem}>{item.name}</Text>
-                    <Text style={styles.projectItem}>{item.description}</Text>
-                    <Text style={styles.projectItem}>{item.categoryId}</Text>
-                    <Text style={styles.projectItem}>{item.createdAt}</Text>
-                </TouchableOpacity>
-              )}
-          />
-        </View>
-        
-        <View style={styles.buttonRow}>
-          
-        </View>
-      </View>
+      <SafeAreaView>
+        <ThemedText text="What are you working on?" className="text-5xl font-bold m-10 dark:color-gray-200"/>
+      </SafeAreaView>
   );
 }
 

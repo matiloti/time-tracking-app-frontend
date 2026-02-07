@@ -1,18 +1,18 @@
-import { DropdownOption } from "@/src/components/Dropdown/Dropdown";
-import { DropdownStyles } from "@/src/components/Dropdown/types";
-import { Form, FormFieldObject } from "@/src/components/Form/Form";
-import FormDropdown from "@/src/components/Form/FormDropdown/FormDropdown";
-import { FormDropdownStyles } from "@/src/components/Form/FormDropdown/types";
-import FormTextField from "@/src/components/Form/FormTextField/FormTextField";
-import { FormTextFieldStyles, PlaceholderColors } from "@/src/components/Form/FormTextField/types";
-import GLOBAL_STYLES from "@/src/constants/styles";
-import { isValidDropdown, isValidString, isValidStringWithLength } from "@/src/utils/formUtils";
+import { DropdownOption } from "@/components/Dropdown/Dropdown";
+import { DropdownStyles } from "@/components/Dropdown/types";
+import { Form, FormFieldObject } from "@/components/Form/Form";
+import FormDropdown from "@/components/Form/FormDropdown/FormDropdown";
+import { FormDropdownStyles } from "@/components/Form/FormDropdown/types";
+import FormTextField from "@/components/Form/FormTextField/FormTextField";
+import { FormTextFieldStyles, PlaceholderColors } from "@/components/Form/FormTextField/types";
+import GLOBAL_STYLES from "@/constants/styles";
+import { isValidDropdown, isValidString, isValidStringWithLength } from "@/utils/formUtils";
 import { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
-import DismissKeyboardView from "@/src/components/wrappers/DismissKeyboardView";
-import { createProject } from "@/src/services/project";
-import { Router, useRouter } from "expo-router";
+import DismissKeyboardView from "@/components/wrappers/DismissKeyboardView";
+import { createProject } from "@/services/project";
+import { Router, Stack, useRouter } from "expo-router";
 
 interface Category {
     id: Int32,
@@ -96,7 +96,7 @@ export default function CreateProject() {
 
     return (
         <DismissKeyboardView>
-            <View style={style.container}>
+            <View className="mt-10 flex-1 justify-between p-10 mt-30">
                 <Form sendForm={sendForm}>
                     <FormTextField 
                         name='name'
@@ -138,6 +138,7 @@ export default function CreateProject() {
                     />
                 </Form>
             </View>
+
         </DismissKeyboardView>
     );
 }
@@ -213,6 +214,5 @@ const style = StyleSheet.create({
         ...GLOBAL_STYLES.container,
         flex: 1,
         justifyContent: 'space-between',
-        marginBottom: '5%'
     }
 });

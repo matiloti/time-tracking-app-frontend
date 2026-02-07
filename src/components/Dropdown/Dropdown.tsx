@@ -1,4 +1,4 @@
-import { DismissFieldFocusContext } from "@/src/context/DismissFieldFocusContext";
+import { DismissFieldFocusContext } from "@/context/DismissFieldFocusContext";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { FlatList, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View, ViewStyle } from "react-native";
 import { defaultStyle } from "./styles";

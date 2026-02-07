@@ -1,14 +1,14 @@
 import { Stack } from "expo-router";
+import "../global.css"
 
 export default function RootLayout() {
   return (
       <Stack screenOptions={{
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+        headerTransparent: true,
+        contentStyle: {backgroundColor: 'red'}
       }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
-          <Stack.Screen name="project/create" options={{title: 'Create project'}}/>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, title: "" }}/>
+          <Stack.Screen name="project" options={{title: 'Create project'}}/>
       </Stack>
   );
 }

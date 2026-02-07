@@ -1,5 +1,5 @@
-import { DismissFieldFocusContext } from "@/src/context/DismissFieldFocusContext";
-import { getStyle } from "@/src/utils/formUtils";
+import { DismissFieldFocusContext } from "@/context/DismissFieldFocusContext";
+import { getStyle } from "@/utils/formUtils";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextInput, TextStyle, View, ViewStyle } from "react-native";
 import { DEFAULT_FORMFIELD_VALUE } from "../constants";
@@ -82,7 +82,7 @@ export default function FormTextField({
 
     return (
         <View style={FIELDGROUP_STYLES}>
-            {label && <Text style={LABEL_STYLES}>{label}</Text>}
+            {label && <Text style={[defaultStyle.label, style?.label]}>{label}</Text>}
                 <TextInput 
                     onFocus={() => dismissContext?.dismissOnlyNotStandardFields()}
                     style={TEXTINPUT_STYLES} 
