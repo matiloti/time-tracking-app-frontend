@@ -96,7 +96,7 @@ export default function CreateProject() {
 
     return (
         <DismissKeyboardView>
-            <View className="mt-10 flex-1 justify-between p-10 mt-30">
+            <View className="mt-30 flex-1 justify-between p-10">
                 <Form sendForm={sendForm}>
                     <FormTextField 
                         name='name'
@@ -117,7 +117,7 @@ export default function CreateProject() {
                                 errorMessage: 'Description is required'
                             },
                             {
-                                execute: (value) => isValidStringWithLength(value, 200),
+                                execute: (value) => isValidStringWithLength(value, 500),
                                 errorMessage: "Description can't exceed 200 characters"
                             }
                         ]}

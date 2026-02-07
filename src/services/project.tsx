@@ -1,5 +1,5 @@
 import { BASE_URL } from "./config";
-import { CreateProject, Project } from "./types/Project";
+import { CreateProject, ProjectDetails, ProjectItem } from "./types/Project";
 
 async function createProject(project: CreateProject) {
   const res = await fetch(`${BASE_URL}/projects`, {
@@ -9,21 +9,20 @@ async function createProject(project: CreateProject) {
   });
 
   if (!res.ok) {
-        console.log(res);
+    console.log(res);
   }
-
-  console.log(res);
 }
 
-const listAllProjects = async (): Promise<Project[]> => {
-  console.log(BASE_URL)
-    const res = await fetch(`${BASE_URL}/projects/listAll`);
-
-    if(!res.ok) {
-        console.log(res);
-    }
-
-    return res.json();
+const listAllProjects = async (): Promise<ProjectItem[]> => {
+  const res = await fetch(`${BASE_URL}/projects/listAll`);
+  if(!res.ok) console.log(res);
+  return res.json();
 }
 
-export { createProject, listAllProjects as findAllProjects }
+const getProjectDetail = async (id: string): Promise<ProjectDetails> => {
+  const res = await fetch(`${BASE_URL}/projects/${id}/details`);
+  if(!res.ok) console.log(res);
+  return res.json();
+}
+
+export { createProject, listAllProjects, getProjectDetail }

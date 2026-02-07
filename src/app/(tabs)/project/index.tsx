@@ -1,64 +1,81 @@
 import ThemedText from "@/components/atoms/ThemedText";
-import { findAllProjects } from "@/services/project";
-import { Project } from "@/services/types/Project";
-import { Router, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { getTheme } from "@/constants/theme";
+import { listAllProjects } from "@/services/project";
+import { ProjectItem } from "@/services/types/Project";
+import { useFocusEffect } from "@react-navigation/native";
+import { Router, Stack, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme } from "react-native";
 
 export default function Index() {
-  const [ projects, setProjects ] = useState<Project[]>([]);
-    const router: Router = useRouter();
+  const [ projects, setProjects ] = useState<ProjectItem[]>([]);                                                                                                                                                                                                                                                      
+  const [refreshing, setRefreshing] = useState(false);      
+  const router: Router = useRouter();                                                                                                                                                                                                                                                                               
+  const isDark = useColorScheme() === 'dark';
+  const theme = getTheme(isDark)
 
-  useEffect(() => {
-    const getProjects = async () => {
-      try {
-        setProjects(await findAllProjects());
-      } catch(error) {
-        console.error(error);
-      }
-    };
+  const fetchProjects = async () => {
+    try {
+      setProjects(await listAllProjects());
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    getProjects();
-  }, []);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProjects();
+    setRefreshing(false);
+  };
 
-  useEffect(() => {
-    console.log(projects)
-  }, [projects])
-  const [visible, setVisible] = useState(true);
+  useFocusEffect(
+    useCallback(() => {
+      fetchProjects();
+    }, [])
+  );
 
   return (
-    <SafeAreaView>
-        <ScrollView className="mt-20 h-full flex flex-col  ">
-          <FlatList 
-              data={projects}
-              keyExtractor={(item) => `${item.id}`}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  onPress={() => console.log(item)}
-                  style={{
-                    backgroundColor: 'white',
-                    shadowColor: '#555',
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 15,
-                    flex: 1,
-                    width: 300,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginBottom: 100,
-                    borderRadius: 20,
-                    padding: 40
-                  }}
-                >
-                  <Text>{item.name}</Text>
-                  <Text>{item.description}</Text>
-                  <Text>{item.categoryId}</Text>
-                </TouchableOpacity>
-              )}
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.primary}
           />
-        </ScrollView>
-    </SafeAreaView>
+        }
+      >
+        { projects.map((item, i) => (
+          <TouchableOpacity
+            key={`${item}${i}`}
+            onPress={() => router.push({pathname: "/project/[id]", params: {id: item.id}})}
+            style={{
+              backgroundColor: theme.backgroundSecondary,
+              shadowColor: '#555',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.15,
+              shadowRadius: 15,
+              flex: 1,
+              width: 350,
+              height: 100,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: i == (projects.length - 1) ? 30 : 20,
+              marginTop: i == 0 ? 30 : 20,
+              borderRadius: 20,
+              padding: 20,
+              alignSelf: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <ThemedText text={item.name}/>
+            <ThemedText text={`${item.description}`}/>
+            <ThemedText text={`${item.categoryId}`}/>
+          </TouchableOpacity>
+        ))}
+        <Stack.Toolbar placement="right">
+            <Stack.Toolbar.Button icon='plus' onPress={() => router.push("/project/create")}/>
+        </Stack.Toolbar>
+      </ScrollView>
   );
 }
 
