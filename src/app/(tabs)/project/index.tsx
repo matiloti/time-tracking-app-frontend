@@ -1,11 +1,12 @@
 import ThemedText from "@/components/atoms/ThemedText";
+import { CATEGORIES } from "@/constants/categories";
 import { getTheme } from "@/constants/theme";
 import { listAllProjects } from "@/services/project";
 import { ProjectItem } from "@/services/types/Project";
 import { useFocusEffect } from "@react-navigation/native";
 import { Router, Stack, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 export default function Index() {
   const [ projects, setProjects ] = useState<ProjectItem[]>([]);                                                                                                                                                                                                                                                      
@@ -57,19 +58,19 @@ export default function Index() {
               flex: 1,
               width: 350,
               height: 100,
-              flexDirection: 'row',
               justifyContent: 'space-between',
               marginBottom: i == (projects.length - 1) ? 30 : 20,
               marginTop: i == 0 ? 30 : 20,
               borderRadius: 20,
               padding: 20,
               alignSelf: 'center',
-              alignItems: 'center'
             }}
           >
-            <ThemedText text={item.name}/>
-            <ThemedText text={`${item.description}`}/>
-            <ThemedText text={`${item.categoryId}`}/>
+            <View className="flex-row items-center justify-start w-full">
+              <View className={`${CATEGORIES[item.categoryId].bgColor} w-2 h-2 rounded-full`}/>
+              <ThemedText text={`${CATEGORIES[item.categoryId].en}`} lightThemeColor={`${CATEGORIES[item.categoryId].textColor}`} darkThemeColor={`${CATEGORIES[item.categoryId].textColor}`} className={`rounded-2xl self-start text-left ml-2`}/>
+            </View>
+            <ThemedText text={item.name} className="font-bold text-2xl"/>
           </TouchableOpacity>
         ))}
         <Stack.Toolbar placement="right">
