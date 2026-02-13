@@ -32,6 +32,7 @@ export default function MilestoneDetail() {
             {
                 milestone?.tasks.map(task => (
                     <TouchableOpacity 
+                        key={task.id}
                         className="bg-gray-700 p-8 rounded-2xl w-full flex flex-row justify-between items-center mb-5"
                         onPress={() => router.push({pathname: "/task/[id]", params: {id: task.id}}) }
                     >
