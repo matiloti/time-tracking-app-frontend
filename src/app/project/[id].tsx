@@ -5,6 +5,9 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useCallback, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
+import { Button, Host } from '@expo/ui/swift-ui';
+import { buttonStyle, controlSize } from "@expo/ui/swift-ui/modifiers";
+
 
 export default function ProjectDetail() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,9 +30,17 @@ export default function ProjectDetail() {
                 <ThemedText text={`${project?.categoryId}`} className="text-center"/>
             </View>
             <ThemedText text={`${project?.description}`} className="flex shrink my-3"/>
-            <ThemedText text="Milestones" className="text-3xl flex shrink my-5"/>
+            <View className="flex-row items-center justify-between w-full">
+                <ThemedText text="Milestones" className="text-3xl flex shrink my-5"/>
+                <Host matchContents style={[{height: 40, width: 40}]}>
+                    <Button modifiers={[buttonStyle('glass'), controlSize('regular')]} >
+                        <SymbolView name="plus" tintColor="white" size={40}/>
+                    </Button>
+                </Host>
+            </View>
             { project?.milestones.map(milestone => (
                 <TouchableOpacity 
+                    key={milestone.id}
                     className="bg-gray-700 p-8 rounded-2xl w-full flex flex-row justify-between items-center mb-5"
                     onPress={() => router.push({pathname: "/milestone/[id]", params: {id: milestone.id}}) }
                 >

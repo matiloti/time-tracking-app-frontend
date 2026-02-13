@@ -1,6 +1,8 @@
 import ThemedText from "@/components/atoms/ThemedText";
 import { getMilestoneDetail } from "@/services/milestone";
 import { MilestoneDetails } from "@/services/types/Milestone";
+import { Button, Host } from "@expo/ui/swift-ui";
+import { buttonStyle, controlSize } from "@expo/ui/swift-ui/modifiers";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useCallback, useState } from "react";
@@ -28,7 +30,14 @@ export default function MilestoneDetail() {
                 <ThemedText text={`From ${milestone?.startDate} until ${milestone?.endDate}`} className="text-center"/>
             </View>
             <ThemedText text={`${milestone?.description ?? '<No description>'}`} className={"flex shrink my-3 " + (milestone?.description!! ? "" : "italic")}/>
-            <ThemedText text="Tasks" className="text-2xl my-5"/>
+            <View className="flex-row items-center justify-between w-full">
+                <ThemedText text="Tasks" className="text-3xl flex shrink my-5"/>
+                <Host matchContents style={[{height: 40, width: 40}]}>
+                    <Button modifiers={[buttonStyle('glass'), controlSize('regular')]} >
+                        <SymbolView name="plus" tintColor="white" size={40}/>
+                    </Button>
+                </Host>
+            </View>
             {
                 milestone?.tasks.map(task => (
                     <TouchableOpacity 
