@@ -44,6 +44,7 @@ export default function Index() {
             tintColor={theme.primary}
           />
         }
+        className="h-full"
       >
         { projects.map((item, i) => (
           <TouchableOpacity

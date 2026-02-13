@@ -1,4 +1,5 @@
 import { BASE_URL } from "./config";
+import { MilestoneDetails } from "./types/Milestone";
 import { CreateProject, ProjectDetails, ProjectItem } from "./types/Project";
 
 async function createProject(project: CreateProject) {
@@ -24,5 +25,6 @@ const getProjectDetail = async (id: string): Promise<ProjectDetails> => {
   if(!res.ok) console.log(res);
   return res.json();
 }
+
 
 export { createProject, listAllProjects, getProjectDetail }

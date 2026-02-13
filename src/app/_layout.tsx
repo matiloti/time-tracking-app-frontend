@@ -18,6 +18,7 @@ export default function RootLayout() {
           <Stack.Screen name="project/create" options={{title: 'Create Project', contentStyle: { backgroundColor: isDark ? "#111" : "whitesmoke" }}}/>
           <Stack.Screen name="project/[id]" options={{title: '', contentStyle: { backgroundColor: isDark ? "#111" : "whitesmoke" }}}/>
           <Stack.Screen name="milestone/[id]" options={{title: '', contentStyle: { backgroundColor: isDark ? "#111" : "whitesmoke" }}}/>
+          <Stack.Screen name="task/[id]" options={{title: '', contentStyle: { backgroundColor: isDark ? "#111" : "whitesmoke" }}}/>
       </Stack>
   );
 }
